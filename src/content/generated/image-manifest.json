@@ -1,0 +1,110 @@
+{
+  "hero-caregiver-walker": {
+    "width": 1800,
+    "height": 1200
+  },
+  "caregiver-senior-smile": {
+    "width": 605,
+    "height": 588
+  },
+  "home-health-walker": {
+    "width": 605,
+    "height": 588
+  },
+  "companion-laughter": {
+    "width": 605,
+    "height": 588
+  },
+  "mobility-wheelchair": {
+    "width": 605,
+    "height": 588
+  },
+  "clinician-tablet": {
+    "width": 605,
+    "height": 588
+  },
+  "hands-held": {
+    "width": 436,
+    "height": 293
+  },
+  "veteran-visit": {
+    "width": 437,
+    "height": 291
+  },
+  "respite-sunset": {
+    "width": 434,
+    "height": 290
+  },
+  "quality-assurance": {
+    "width": 605,
+    "height": 588
+  },
+  "core-values": {
+    "width": 605,
+    "height": 588
+  },
+  "our-vision": {
+    "width": 605,
+    "height": 588
+  },
+  "legal-agreement": {
+    "width": 605,
+    "height": 588
+  },
+  "legal-privacy": {
+    "width": 605,
+    "height": 588
+  },
+  "legal-liability": {
+    "width": 605,
+    "height": 588
+  },
+  "team-healthcare-staff": {
+    "width": 1600,
+    "height": 663
+  },
+  "team-clinicians": {
+    "width": 1600,
+    "height": 440
+  },
+  "patient-recovery": {
+    "width": 1600,
+    "height": 708
+  },
+  "hands-compassion": {
+    "width": 1600,
+    "height": 440
+  },
+  "careers-handshake": {
+    "width": 1600,
+    "height": 440
+  },
+  "senior-companion": {
+    "width": 1600,
+    "height": 440
+  },
+  "team-together": {
+    "width": 1600,
+    "height": 598
+  },
+  "home-visit-tablet": {
+    "width": 1600,
+    "height": 440
+  },
+  "office-team": {
+    "width": 1600,
+    "height": 440
+  },
+  "caregiver-greeting": {
+    "width": 1600,
+    "height": 577
+  },
+  "supportive-hands": {
+    "width": 1600,
+    "height": 664
+  },
+  "legal-justice": {
+    "width": 1600,
+    "height": 440
+  }
+}

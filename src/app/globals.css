@@ -1,0 +1,466 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Ideal Service Staff — design tokens
+   Navy (trust) · Teal (care & innovation) · Badge gold (heritage, sparingly)
+   ────────────────────────────────────────────────────────────────────────── */
+@theme {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  --color-navy-50: #f2f5fa;
+  --color-navy-100: #e1e8f2;
+  --color-navy-200: #c3d0e3;
+  --color-navy-300: #94a9c9;
+  --color-navy-400: #5f7ba6;
+  --color-navy-500: #3d5a88;
+  --color-navy-600: #2a4470;
+  --color-navy-700: #1d355d;
+  --color-navy-800: #12264a;
+  --color-navy-900: #0b1b38;
+  --color-navy-950: #061128;
+
+  --color-teal-50: #effcf9;
+  --color-teal-100: #c9f5ea;
+  --color-teal-200: #96ead7;
+  --color-teal-300: #5cd8c0;
+  --color-teal-400: #2ebfa7;
+  --color-teal-500: #16a38e;
+  --color-teal-600: #0e8475;
+  --color-teal-700: #0f695f;
+  --color-teal-800: #11544d;
+  --color-teal-900: #124641;
+
+  --color-gold-300: #f6d77e;
+  --color-gold-400: #f1c34a;
+  --color-gold-500: #e0a92a;
+
+  --color-canvas: #faf8f4;
+  --color-sand: #f3efe7;
+  --color-line: #e6e0d5;
+  --color-ink: #0b1b38;
+  --color-body: #3e4c63;
+  --color-muted: #5b677d;
+
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.75rem;
+
+  --shadow-soft: 0 1px 2px rgb(11 27 56 / 0.04), 0 8px 24px -8px rgb(11 27 56 / 0.10);
+  --shadow-lift: 0 2px 4px rgb(11 27 56 / 0.04), 0 24px 48px -16px rgb(11 27 56 / 0.22);
+  --shadow-glow: 0 10px 40px -10px rgb(22 163 142 / 0.55);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-float-slow: float 10s ease-in-out infinite;
+  --animate-spin-slow: spin 28s linear infinite;
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-blob: blob 18s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2.4s var(--ease-out-expo) infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(0, -12px, 0); }
+  }
+  @keyframes marquee {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+  @keyframes blob {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    33% { transform: translate3d(4%, -6%, 0) scale(1.08); }
+    66% { transform: translate3d(-5%, 4%, 0) scale(0.95); }
+  }
+  @keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 0.7; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 6rem;
+  }
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: hidden; }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4 {
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--color-teal-200); color: var(--color-navy-950); }
+
+  :focus-visible {
+    outline: 2px solid var(--color-teal-500);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  /* Hide the custom cursor ring for keyboard + touch users */
+  @media (hover: none) { .cursor-ring { display: none; } }
+}
+
+/* ── Components ───────────────────────────────────────────────────────── */
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 82rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) { .container-x { padding-inline: 2rem; } }
+  @media (min-width: 1024px) { .container-x { padding-inline: 3rem; } }
+
+  .section { padding-block: 5rem; }
+  @media (min-width: 1024px) { .section { padding-block: 8rem; } }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-teal-700);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+  .eyebrow-light { color: var(--color-teal-300); }
+
+  .display-xl {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.6rem, 6.4vw, 5.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    font-variation-settings: "opsz" 144;
+  }
+  .display-lg {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.1rem, 4.4vw, 3.75rem);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 120;
+  }
+  .display-md {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    font-variation-settings: "opsz" 72;
+  }
+  .lede {
+    font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+    line-height: 1.7;
+    color: var(--color-body);
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-3xl);
+    box-shadow: var(--shadow-soft);
+  }
+  .glass {
+    background: rgb(255 255 255 / 0.72);
+    border: 1px solid rgb(255 255 255 / 0.7);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    box-shadow: var(--shadow-lift);
+  }
+  .glass-dark {
+    background: rgb(11 27 56 / 0.55);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    backdrop-filter: blur(18px) saturate(1.3);
+    -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  }
+
+  .hairline { border-color: var(--color-line); }
+
+  /* Subtle film grain for depth on dark sections */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .bg-dots {
+    background-image: radial-gradient(rgb(11 27 56 / 0.09) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.4s var(--ease-out-expo);
+  }
+  .link-underline:hover, .link-underline:focus-visible { background-size: 100% 1px; }
+
+  /* Long-form content (legal pages + blog articles from WordPress) */
+  .prose-care { color: var(--color-body); font-size: 1.0625rem; line-height: 1.8; }
+  .prose-care > * + * { margin-top: 1.15em; }
+  .prose-care h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    line-height: 1.2;
+    margin-top: 2.2em;
+    padding-top: 1.2em;
+    border-top: 1px solid var(--color-line);
+    scroll-margin-top: 7rem;
+  }
+  .prose-care h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+  .prose-care h3 { font-size: 1.25rem; font-weight: 700; margin-top: 1.8em; }
+  .prose-care h4 { font-size: 1.05rem; font-weight: 700; margin-top: 1.5em; color: var(--color-ink); }
+  .prose-care strong { color: var(--color-ink); font-weight: 650; }
+  .prose-care a { color: var(--color-teal-700); text-decoration: underline; text-underline-offset: 3px; }
+  .prose-care ul { list-style: none; padding-left: 0; }
+  .prose-care ul li { position: relative; padding-left: 1.6rem; margin-top: 0.5rem; }
+  .prose-care ul li::before {
+    content: ""; position: absolute; left: 0.2rem; top: 0.72em;
+    width: 0.45rem; height: 0.45rem; border-radius: 999px; background: var(--color-teal-500);
+  }
+  .prose-care ol { list-style: decimal; padding-left: 1.4rem; }
+  .prose-care blockquote {
+    border-left: 3px solid var(--color-teal-400);
+    padding-left: 1.25rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--color-ink);
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(100deg, var(--color-teal-600) 0%, var(--color-teal-400) 45%, var(--color-navy-600) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .mask-fade-x {
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+}
+
+/* Respect reduced-motion preferences everywhere CSS animates */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── First-visit intro curtain (pure CSS — never blocks if JS fails) ──── */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--color-navy-950);
+  animation: intro-out 0.7s var(--ease-in-out-quart) 0.5s forwards;
+  pointer-events: none;
+}
+.intro__badge {
+  width: 96px;
+  height: 96px;
+  animation: intro-badge 0.6s var(--ease-out-expo) both;
+}
+.intro__bar {
+  margin-top: 1.5rem;
+  width: 140px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgb(255 255 255 / 0.12);
+}
+.intro__bar::after {
+  content: "";
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-teal-400), var(--color-gold-400));
+  animation: intro-bar 0.5s var(--ease-out-expo) 0.05s both;
+  transform-origin: left;
+}
+.intro-seen .intro { display: none; }
+@keyframes intro-out {
+  to { clip-path: inset(0 0 100% 0); visibility: hidden; }
+}
+@keyframes intro-badge {
+  from { opacity: 0; transform: scale(0.82) rotate(-12deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes intro-bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro { display: none; }
+}
+
+/* ── Above-the-fold entrances (pure CSS) ────────────────────────────────
+   Hero content animates from first paint instead of waiting for React to
+   hydrate — this keeps LCP fast. On a first visit the intro curtain is
+   showing, so everything is offset by its duration. */
+@keyframes enter-rise {
+  from { opacity: 0; transform: translate3d(0, 24px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes enter-word {
+  from { transform: translate3d(0, 110%, 0) rotate(4deg); }
+  to { transform: none; }
+}
+@keyframes enter-clip {
+  from { clip-path: inset(100% 0% 0% 0%); }
+  to { clip-path: inset(0% 0% 0% 0%); }
+}
+@keyframes enter-pop {
+  from { opacity: 0; transform: scale(0.88) translate3d(0, 28px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes enter-slide {
+  from { opacity: 0; transform: translate3d(-28px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes enter-spin {
+  from { opacity: 0; transform: scale(0.6) rotate(-40deg); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes enter-bar {
+  from { width: 0; }
+  to { width: 18px; }
+}
+.enter, .enter-word, .enter-clip, .enter-pop, .enter-slide, .enter-spin, .enter-bar {
+  animation-fill-mode: both;
+  animation-delay: var(--d, 0s);
+}
+.enter { animation: enter-rise 1s var(--ease-out-expo) both; animation-delay: var(--d, 0s); }
+.enter-word { display: inline-block; animation: enter-word 1s var(--ease-out-expo) both; animation-delay: var(--d, 0s); will-change: transform; }
+.enter-clip { animation: enter-clip 1.1s var(--ease-in-out-quart) both; animation-delay: var(--d, 0s); }
+.enter-pop { animation: enter-pop 1.1s var(--ease-out-expo) both; animation-delay: var(--d, 0s); }
+.enter-slide { animation: enter-slide 1s var(--ease-out-expo) both; animation-delay: var(--d, 0s); }
+.enter-spin { animation: enter-spin 1.2s var(--ease-out-expo) both; animation-delay: var(--d, 0s); }
+.enter-bar { animation: enter-bar 0.6s var(--ease-out-expo) both; animation-delay: var(--d, 0s); }
+html:not(.intro-seen) :is(.enter, .enter-word, .enter-clip, .enter-pop, .enter-slide, .enter-spin, .enter-bar) {
+  animation-delay: calc(var(--d, 0s) + 0.55s);
+}
+
+/* ── Scroll reveals (driven by revealScript in components/motion/Reveal) ─ */
+@layer components {
+  [data-reveal],
+  [data-reveal-item] {
+    opacity: 0;
+    transform: translate3d(var(--rx, 0px), var(--ry, 26px), 0);
+    transition:
+      opacity 0.9s var(--ease-out-expo),
+      transform 0.9s var(--ease-out-expo);
+    transition-delay: var(--d, 0s);
+  }
+  [data-reveal].is-in,
+  [data-reveal-group].is-in [data-reveal-item] {
+    opacity: 1;
+    transform: none;
+  }
+  .split-word {
+    display: inline-block;
+    transform: translate3d(0, 110%, 0) rotate(4deg);
+    transition: transform 1s var(--ease-out-expo);
+    transition-delay: var(--d, 0s);
+  }
+  [data-reveal-split].is-in .split-word { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal], [data-reveal-item], .split-word { opacity: 1 !important; transform: none !important; }
+}
+
+/* Page transition — `backwards` fill leaves no transform behind afterwards */
+@keyframes page-in {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.page-in { animation: page-in 0.6s var(--ease-out-expo) backwards; }
+
+/* Skip layout/paint of off-screen sections until they approach the viewport.
+   `auto` intrinsic size remembers each section's real height once rendered. */
+@layer utilities {
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1100px;
+  }
+}
+
+/* ── Scroll-driven effects (compositor-only, no JS) ─────────────────────── */
+[data-reveal].reveal-clip {
+  opacity: 0.4;
+  transform: none;
+  clip-path: inset(18% 0% 18% 0% round 2rem);
+  transition:
+    clip-path 1.3s var(--ease-out-expo),
+    opacity 1.3s var(--ease-out-expo);
+}
+[data-reveal].reveal-clip.is-in { opacity: 1; clip-path: inset(0% 0% 0% 0% round 0rem); }
+
+@keyframes parallax-y {
+  from { transform: translate3d(0, calc(var(--px, 10%) * -1), 0); }
+  to { transform: translate3d(0, var(--px, 10%), 0); }
+}
+@keyframes drift-y {
+  from { transform: translate3d(0, var(--drift, 60px), 0); }
+  to { transform: translate3d(0, calc(var(--drift, 60px) * -1), 0); }
+}
+@keyframes grow-y {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@keyframes hero-sink {
+  to { transform: translate3d(0, 14%, 0); }
+}
+@keyframes hero-fade {
+  to { opacity: 0; }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax-y { animation: parallax-y linear both; animation-timeline: view(); animation-range: cover; }
+    .drift { animation: drift-y linear both; animation-timeline: view(); animation-range: cover; }
+    .scroll-line { animation: grow-y linear both; animation-timeline: view(); animation-range: entry 30% exit 45%; }
+    .hero-sink { animation: hero-sink linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+    .hero-fade { animation: hero-fade linear both; animation-timeline: scroll(root); animation-range: 10vh 75vh; }
+  }
+}
+
+/* Purely ornamental numerals: rendered as generated content (not page text) */
+@layer utilities {
+  .deco-num::before { content: attr(data-num); }
+}
