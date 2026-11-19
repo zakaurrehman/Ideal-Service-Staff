@@ -3,13 +3,14 @@
 import { AnimatePresence, m as motion, useInView, useReducedMotion, type PanInfo } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Pause, Play, Quote } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { testimonials } from "@/content/company";
+import { testimonials as staticTestimonials } from "@/content/company";
 import { SectionHeading } from "@/components/ui/Primitives";
 
 const INTERVAL = 9000;
 
 /** Section J — accessible testimonial carousel (swipe, arrows, keyboard, pause control). */
-export function Testimonials() {
+export function Testimonials({ items }: { items?: typeof staticTestimonials }) {
+  const testimonials = items?.length ? items : staticTestimonials;
   const [[index, dir], setState] = useState<[number, number]>([0, 1]);
   const [playing, setPlaying] = useState(true);
   const [hovered, setHovered] = useState(false);

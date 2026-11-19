@@ -1,5 +1,9 @@
 # WordPress portal setup
 
+> **Historical document.** This describes the earlier WordPress hand-off (November 2026). The platform now has its own accounts, dashboards and booking: see [`NEW-PLATFORM-ARCHITECTURE.md`](../docs/NEW-PLATFORM-ARCHITECTURE.md).
+
+> WordPress is no longer used for sign-in or dashboards, so this skin is only needed if you keep WordPress online for other reasons.
+
 The new website keeps WordPress for everything that involves accounts. This folder holds what to change **inside WordPress**. None of it can be applied from this repository: it needs WordPress admin access.
 
 ## 1. Move WordPress to the portal subdomain (at launch)

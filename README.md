@@ -1,59 +1,52 @@
-# Ideal Service Staff — website
+# Ideal Service Staff: website and staffing platform
 
-The redesigned **idealservicestaff.com**: a Next.js front-end that keeps the existing WordPress install for the parts that already work there (accounts, blog editing).
+The public website for **idealservicestaff.com**, plus a complete healthcare staffing platform:
+
+- customer, employee and admin portals;
+- a booking engine;
+- job applications;
+- notifications;
+- private document storage.
+
+It runs on Next.js and PostgreSQL. WordPress is no longer used for accounts, dashboards, booking or forms.
 
 ```
 npm install
-cp .env.example .env.local        # then fill in a form-delivery channel
+cp .env.example .env.local        # optional locally: without DATABASE_URL an embedded dev database is used
 npm run dev                       # http://localhost:3000
-npm run build && npm start        # production build
+npm run admin:create -- --email you@example.com --first You --last Admin   # prints a set-password link
 ```
 
 | Script | What it does |
 | --- | --- |
 | `npm run dev` / `build` / `start` | Next.js 16 (Turbopack) |
 | `npm run typecheck` | TypeScript, no emit |
-| `npm run assets` | Rebuilds every image in `public/images`, the app icons and the Open Graph image from `assets/source/` |
-| `npm run content:sync` | Re-pulls the legal pages and blog posts from the WordPress REST API into `src/content/generated/` |
+| `npm test` | Integration tests on a real PostgreSQL engine (PGlite) |
+| `npm run test:e2e` | End-to-end browser journeys against the production build (`npm run build` first; uses Edge or Chrome) |
+| `npm run db:generate` / `db:migrate` / `db:studio` | Drizzle migrations |
+| `npm run admin:create` | Create the first Super Admin. There is no default admin. |
+| `npm run assets` / `content:sync` | Image pipeline / WordPress content snapshot |
 
-Stack: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Framer Motion (`LazyMotion`) · Lenis · Lucide · Zod.
+Stack: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · PostgreSQL (Neon) · Drizzle ORM · Argon2id · Vercel Blob · Resend · Framer Motion · Lucide · Zod.
+
+## Platform documentation
+
+| Topic | Document |
+| --- | --- |
+| Architecture, audit, phases | [`docs/NEW-PLATFORM-ARCHITECTURE.md`](docs/NEW-PLATFORM-ARCHITECTURE.md) |
+| Progress and remaining work | [`docs/PROGRESS.md`](docs/PROGRESS.md) |
+| Database | [`docs/DATABASE-SCHEMA.md`](docs/DATABASE-SCHEMA.md) |
+| Auth, roles | [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md), [`docs/ROLE-PERMISSIONS.md`](docs/ROLE-PERMISSIONS.md) |
+| Bookings | [`docs/BOOKING-SYSTEM.md`](docs/BOOKING-SYSTEM.md) |
+| Running the business | [`docs/ADMIN-GUIDE.md`](docs/ADMIN-GUIDE.md) |
+| Going live | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md), [`docs/ENVIRONMENT-VARIABLES.md`](docs/ENVIRONMENT-VARIABLES.md) |
+| Security, tests | [`docs/SECURITY.md`](docs/SECURITY.md), [`docs/TEST-REPORT.md`](docs/TEST-REPORT.md) |
+
+`docs/PORTAL-AUDIT.md` and `wordpress/` document the earlier WordPress hand-off and are kept for history only.
 
 ---
 
-## 1. What the audit of the old site found
-
-The old site runs WordPress on Hostinger (Astra theme with Elementor). Its pages, posts and 88 media files were pulled through the WordPress REST API.
-
-| Function | State on the live site | What the new site does |
-| --- | --- | --- |
-| Contact form (Forminator #869) | **Broken.** Plugin is inactive, so the page shows the raw shortcode. | New validated form → `/api/inquiry/` |
-| Care request (Forminator #1284, `/get-care/`) | **Broken** | Three-step care request form |
-| Job application (Forminator #1293, `/get-job/`) | **Broken** | Full application form with résumé upload and SMS consent |
-| Newsletter (Arrow Forms #667, footer) | **Broken** | Newsletter field in the footer |
-| Services booking (Amelia, `/services-booking/`) | **Broken.** Shows `[ameliastepbooking]`. | Consultation-request form, plus an optional link to a live booking calendar (`NEXT_PUBLIC_BOOKING_URL`) |
-| Customer / employee panels (Amelia) | **Broken.** Amelia is not installed. | `/customer-panel/` and `/employee-panel/` are gateways: they forward to WordPress when the dashboard really works, and otherwise show an honest status page |
-| Sign-in, registration, lost password (User Registration plugin) | **Working** | Kept on WordPress. `/sign-in/` is the portal gateway with a live status check; the WordPress pages are restyled with `wordpress/portal-skin.css`. |
-
-All original URLs are preserved, including blog posts at `/<post-slug>/` and About at `/non-medical-home-care-experts/`. `trailingSlash` matches the WordPress permalinks. Retired URLs redirect: `/about/`, `/home/`, `/online/`, `/under-construction/`.
-
-> **Account portal:** see [`docs/PORTAL-AUDIT.md`](docs/PORTAL-AUDIT.md) for the full audit, redirects, testing results and what still needs WordPress or Amelia.
-
-## 2. Launch checklist (cutover)
-
-1. **Move WordPress to a subdomain**, e.g. `portal.idealservicestaff.com`. In WordPress, update *Settings → General* (WordPress Address and Site Address) to that subdomain.
-2. **Deploy this app** (Vercel, Netlify or any Node host) on `idealservicestaff.com` with:
-   - `NEXT_PUBLIC_SITE_URL=https://idealservicestaff.com`
-   - `NEXT_PUBLIC_PORTAL_URL=https://portal.idealservicestaff.com`
-   - `WORDPRESS_URL=https://portal.idealservicestaff.com`
-
-   The legacy account URLs (`/login/`, `/my-account/`, `/registration/`, `/lost-password/`, `/customer-panel/`, `/employee-panel/`) then forward to the portal automatically. Until the portal origin differs from the site origin, they point at `/sign-in/`, and the build prints a warning.
-3. **Configure form delivery** (required; otherwise forms answer 503 and ask visitors to call):
-   - **Email:** `RESEND_API_KEY`, `INQUIRY_TO_EMAIL`, `INQUIRY_FROM_EMAIL`. The sender domain must be verified in Resend first.
-   - **And/or a webhook:** `FORMS_WEBHOOK_URL` (Zapier, Make, a CRM…) plus `FORMS_WEBHOOK_SECRET`, sent as the `X-Webhook-Secret` header.
-4. **WordPress side:** follow [`wordpress/README.md`](wordpress/README.md). It covers the brand skin, the recommended User Registration settings and the Amelia installation. Both dashboards and online booking switch on automatically once Amelia renders; no website change is needed.
-5. Submit `/sitemap.xml` in Google Search Console.
-
-## 3. Architecture
+## Architecture (public website)
 
 ```
 src/
@@ -74,7 +67,7 @@ src/
 ```
 
 - **Blog:** posts stay in WordPress and appear here within an hour (ISR). If WordPress is unreachable, the bundled snapshot is served.
-- **Forms:** one route handler with the same Zod schemas as the browser. It adds a same-origin check, per-IP rate limiting (in-memory; use Redis or Upstash for multi-region), a honeypot, a minimum fill-time check, and a résumé type/size check (PDF or Word, 5 MB). It **never reports success unless a delivery channel accepted the message**.
+- **Forms:** one route handler with the same Zod schemas as the browser. It adds a same-origin check, per-IP rate limiting (stored in PostgreSQL, so shared across server instances), a honeypot, a minimum fill-time check, and file checks by content type (résumé and documents, 4 MB in total). Submissions are **stored in PostgreSQL first** (visible in Admin → Care Requests / Job Applications); email or webhook copies are optional.
 - **Animation and performance:**
   - Above-the-fold entrances are pure CSS (`.enter*`), so they start at first paint.
   - Scroll reveals use data attributes plus one inline IntersectionObserver, with no per-element React.
@@ -84,7 +77,7 @@ src/
   - Everything respects `prefers-reduced-motion`.
 - **Images:** the original photos are restored and optimised by `scripts/optimize-assets.mjs`. Several Elementor banners had a white wash baked into the pixels, which is reversed mathematically, and several portraits had a red corner bracket baked in, which is cropped off.
 
-## 4. Quality checks run before handover
+## Public website quality checks
 
 Lighthouse 13 against the production build, median of three runs:
 
@@ -108,7 +101,7 @@ CLS is 0 on every page. Other checks run:
 
 ---
 
-## 5. Content items for the owner to review ⚠️
+## Content items for the owner to review ⚠️
 
 These were **kept exactly as published** on the old site (no claims were added). Please confirm or correct them:
 

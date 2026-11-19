@@ -5,12 +5,13 @@ import Link from "next/link";
 import { AnimatePresence, LayoutGroup, m as motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useState } from "react";
-import { serviceCategories, services, type ServiceCategory } from "@/content/services";
+import { serviceCategories, services as staticServices, type Service, type ServiceCategory } from "@/content/services";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
 /** Section D — interactive, filterable service cards. */
-export function ServicesExplorer({ limit }: { limit?: number }) {
+export function ServicesExplorer({ limit, items }: { limit?: number; items?: Service[] }) {
+  const services = items ?? staticServices;
   const [active, setActive] = useState<ServiceCategory | "all">("all");
   const list = services.filter((s) => active === "all" || s.category === active).slice(0, limit);
 
@@ -100,7 +101,7 @@ function AdviceTile({ count }: { count: number }) {
   );
 }
 
-export function ServiceCard({ service: s }: { service: (typeof services)[number] }) {
+export function ServiceCard({ service: s }: { service: Service }) {
   return (
     <Link
       href={`/services/${s.slug}/`}
