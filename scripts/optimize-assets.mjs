@@ -25,7 +25,8 @@ const APP = path.resolve("src/app");
  */
 const images = [
   // Portrait / editorial photography (original quality)
-  { src: "About-us-F-img-scaled.webp", out: "hero-caregiver-walker", width: 1800 },
+  // Hero: Pexels photo 7345474 by @shkrabaanthony (Pexels License, free for commercial use)
+  { src: "pexels-7345474-home-visit.jpg", out: "hero-home-visit", width: 1200 },
   { inset: 12, src: "Layer-78.png", out: "caregiver-senior-smile", width: 900 },
   { inset: 12, src: "Layer-80.jpg", out: "home-health-walker", width: 900 },
   { inset: 12, src: "Who-We-are.jpg", out: "companion-laughter", width: 900 },

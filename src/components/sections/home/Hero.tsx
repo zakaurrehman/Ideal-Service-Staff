@@ -127,13 +127,13 @@ export function Hero() {
               <div className="enter-clip relative size-full overflow-hidden rounded-b-[2.5rem] rounded-t-[999px] shadow-lift" style={d(0.05)}>
                 <div className="hero-sink absolute inset-[-8%]">
                   <Image
-                    src="/images/hero-caregiver-walker.webp"
-                    alt="A caregiver gently helping an older woman walk with her walker at home"
+                    src="/images/hero-home-visit.webp"
+                    alt="A caregiver checking an older man's blood pressure during a home visit"
                     fill
                     priority
                     fetchPriority="high"
                     sizes="(min-width: 1024px) 65vw, 200vw"
-                    className="object-cover object-[38%_50%]"
+                    className="object-cover object-[50%_30%]"
                   />
                 </div>
                 <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-navy-950/35 via-transparent to-transparent" />
