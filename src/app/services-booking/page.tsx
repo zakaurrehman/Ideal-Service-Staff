@@ -1,5 +1,6 @@
 import { CalendarCheck, ExternalLink, LayoutDashboard, Phone } from "lucide-react";
 import { BOOKING_URL, portal, site } from "@/content/site";
+import { getPortalStatus } from "@/lib/portal";
 import { BookingForm } from "@/components/forms/BookingForm";
 import { Enter } from "@/components/motion/Reveal";
 import { PageHero } from "@/components/ui/Primitives";
@@ -13,7 +14,13 @@ export const metadata = pageMetadata({
   image: "/images/home-visit-tablet.webp",
 });
 
-export default function ServicesBookingPage() {
+/** Re-checks whether the live booking calendar works every 5 minutes. */
+export const revalidate = 300;
+
+export default async function ServicesBookingPage() {
+  const status = await getPortalStatus();
+  // Only advertise online booking when the calendar really renders (or an explicit URL is configured).
+  const bookingHref = BOOKING_URL || (status.booking === "online" ? `${portal.origin}/services-booking/` : "");
   return (
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: "Services Booking", path: "/services-booking/" }])} />
@@ -38,12 +45,12 @@ export default function ServicesBookingPage() {
           </Enter>
 
           <aside className="space-y-5 lg:col-span-4">
-            {BOOKING_URL && (
+            {bookingHref && (
               <Enter delay={0.05} className="rounded-[2rem] bg-teal-700 p-8 text-white">
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-100">Instant online booking</p>
                 <p className="mt-3 font-display text-2xl">Pick an available slot in our live calendar.</p>
                 <a
-                  href={BOOKING_URL}
+                  href={bookingHref}
                   className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-white px-6 font-semibold text-teal-800 transition-colors hover:bg-teal-50"
                 >
                   Open booking calendar <ExternalLink aria-hidden className="size-4" />
@@ -74,7 +81,7 @@ export default function ServicesBookingPage() {
               </span>
               <p className="mt-5 font-bold text-navy-900">Existing client?</p>
               <p className="mt-1 text-sm text-muted">View and manage your appointments in your customer dashboard.</p>
-              <a href={portal.customerPanel} className="mt-4 inline-flex text-sm font-semibold text-teal-700 underline underline-offset-4">
+              <a href="/customer-panel/" className="mt-4 inline-flex text-sm font-semibold text-teal-700 underline underline-offset-4">
                 Go to Customer Dashboard →
               </a>
             </Enter>

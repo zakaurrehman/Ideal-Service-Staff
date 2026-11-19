@@ -1,5 +1,4 @@
 import { careerBenefits, screeningSteps } from "@/content/company";
-import { portal } from "@/content/site";
 import { JobApplicationForm } from "@/components/forms/JobApplicationForm";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import { PageHero } from "@/components/ui/Primitives";
@@ -75,7 +74,7 @@ export default function GetJobPage() {
               <Reveal delay={0.15} className="rounded-[1.5rem] bg-navy-900 p-6 text-sm text-navy-200">
                 <p className="font-semibold text-white">Already part of the team?</p>
                 <p className="mt-1">Access your schedule and appointments in the employee dashboard.</p>
-                <a href={portal.employeePanel} className="mt-4 inline-flex font-semibold text-teal-300 underline underline-offset-4 hover:text-teal-200">
+                <a href="/employee-panel/" className="mt-4 inline-flex font-semibold text-teal-300 underline underline-offset-4 hover:text-teal-200">
                   Login to Employee Dashboard →
                 </a>
               </Reveal>

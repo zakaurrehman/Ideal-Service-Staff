@@ -39,13 +39,30 @@ export const site = {
   },
 } as const;
 
+const originOf = (u: string) => {
+  try {
+    return new URL(u).origin;
+  } catch {
+    return u;
+  }
+};
+
+/**
+ * True when WordPress runs on its own origin (e.g. portal.idealservicestaff.com).
+ * Until then, gateway pages never auto-redirect (that would loop on one domain).
+ */
+export const portalIsSeparate = originOf(PORTAL_URL) !== originOf(SITE_URL);
+
+/** WordPress destinations — slugs verified against the live site. */
 export const portal = {
+  origin: PORTAL_URL,
   signIn: `${PORTAL_URL}/sign-in/`,
   register: `${PORTAL_URL}/registration/`,
   lostPassword: `${PORTAL_URL}/lost-password/`,
   myAccount: `${PORTAL_URL}/my-account/`,
   customerPanel: `${PORTAL_URL}/customer-panel/`,
   employeePanel: `${PORTAL_URL}/employee-panel/`,
+  admin: `${PORTAL_URL}/wp-admin/`,
 };
 
 export type NavLink = { label: string; href: string; description?: string; external?: boolean };
@@ -84,8 +101,8 @@ export const footerNav = {
     { label: "Request Care", href: "/get-care/" },
     { label: "Services Booking", href: "/services-booking/" },
     { label: "Sign In / My Account", href: "/sign-in/" },
-    { label: "Customer Dashboard", href: portal.customerPanel, external: true },
-    { label: "Employee Dashboard", href: portal.employeePanel, external: true },
+    { label: "Customer Dashboard", href: "/customer-panel/" },
+    { label: "Employee Dashboard", href: "/employee-panel/" },
   ],
   legal: [
     { label: "Legal Disclosure", href: "/legal-disclosure/" },

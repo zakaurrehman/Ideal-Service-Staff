@@ -31,10 +31,12 @@ The old site runs WordPress on Hostinger (Astra theme with Elementor). Its pages
 | Job application (Forminator #1293, `/get-job/`) | **Broken** | Full application form with résumé upload and SMS consent |
 | Newsletter (Arrow Forms #667, footer) | **Broken** | Newsletter field in the footer |
 | Services booking (Amelia, `/services-booking/`) | **Broken.** Shows `[ameliastepbooking]`. | Consultation-request form, plus an optional link to a live booking calendar (`NEXT_PUBLIC_BOOKING_URL`) |
-| Customer / employee panels (Amelia) | **Broken** | Linked from the account hub; they work again once Amelia is re-activated in WordPress |
-| Sign-in, registration, lost password (User Registration plugin) | **Working** | Kept on WordPress. `/sign-in/` is a redesigned account hub that hands off to it. |
+| Customer / employee panels (Amelia) | **Broken.** Amelia is not installed. | `/customer-panel/` and `/employee-panel/` are gateways: they forward to WordPress when the dashboard really works, and otherwise show an honest status page |
+| Sign-in, registration, lost password (User Registration plugin) | **Working** | Kept on WordPress. `/sign-in/` is the portal gateway with a live status check; the WordPress pages are restyled with `wordpress/portal-skin.css`. |
 
 All original URLs are preserved, including blog posts at `/<post-slug>/` and About at `/non-medical-home-care-experts/`. `trailingSlash` matches the WordPress permalinks. Retired URLs redirect: `/about/`, `/home/`, `/online/`, `/under-construction/`.
+
+> **Account portal:** see [`docs/PORTAL-AUDIT.md`](docs/PORTAL-AUDIT.md) for the full audit, redirects, testing results and what still needs WordPress or Amelia.
 
 ## 2. Launch checklist (cutover)
 
@@ -48,7 +50,7 @@ All original URLs are preserved, including blog posts at `/<post-slug>/` and Abo
 3. **Configure form delivery** (required; otherwise forms answer 503 and ask visitors to call):
    - **Email:** `RESEND_API_KEY`, `INQUIRY_TO_EMAIL`, `INQUIRY_FROM_EMAIL`. The sender domain must be verified in Resend first.
    - **And/or a webhook:** `FORMS_WEBHOOK_URL` (Zapier, Make, a CRM…) plus `FORMS_WEBHOOK_SECRET`, sent as the `X-Webhook-Secret` header.
-4. **Booking:** re-activate Amelia in WordPress, then set `NEXT_PUBLIC_BOOKING_URL=https://portal.idealservicestaff.com/services-booking/` to show an "Instant online booking" card.
+4. **WordPress side:** follow [`wordpress/README.md`](wordpress/README.md). It covers the brand skin, the recommended User Registration settings and the Amelia installation. Both dashboards and online booking switch on automatically once Amelia renders; no website change is needed.
 5. Submit `/sitemap.xml` in Google Search Console.
 
 ## 3. Architecture

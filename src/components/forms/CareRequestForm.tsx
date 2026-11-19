@@ -52,7 +52,21 @@ export function CareRequestForm({ preselect }: { preselect?: string }) {
   }
 
   return (
-    <form onFocusCapture={preloadValidation} ref={formRef} onSubmit={onSubmit} noValidate className="relative scroll-mt-32" aria-label="Request care">
+    <form
+      onFocusCapture={preloadValidation}
+      ref={formRef}
+      onSubmit={onSubmit}
+      onKeyDown={(e) => {
+        // Enter in a text field advances the step instead of submitting early
+        if (e.key === "Enter" && step < steps.length - 1 && e.target instanceof HTMLInputElement) {
+          e.preventDefault();
+          void go(step + 1);
+        }
+      }}
+      noValidate
+      className="relative scroll-mt-32"
+      aria-label="Request care"
+    >
       <Honeypot />
 
       {/* Progress */}

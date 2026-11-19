@@ -1,0 +1,233 @@
+/*
+ * Ideal Service Staff — WordPress portal skin
+ * ------------------------------------------------------------------
+ * Restyles the User Registration plugin pages (Sign in, Login, My Account,
+ * Registration, Lost Password) to match the new website. Styling only —
+ * no markup, fields, validation or authentication behaviour is changed.
+ *
+ * Install: WordPress admin → Appearance → Customize → Additional CSS
+ *          (paste this whole file; keep the @import line first).
+ *
+ * Selectors were taken from the live markup of User Registration 5.2.8.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+
+body.user-registration-page {
+  --iss-navy: #0b1b38;
+  --iss-navy-2: #12264a;
+  --iss-teal: #0f695f;
+  --iss-teal-hover: #11544d;
+  --iss-teal-soft: #effcf9;
+  --iss-canvas: #faf8f4;
+  --iss-line: #e6e0d5;
+  --iss-body: #3e4c63;
+  --iss-muted: #5b677d;
+  --iss-error: #b42318;
+  background: var(--iss-canvas);
+  color: var(--iss-body);
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+/* ── Card container ─────────────────────────────────────────────── */
+.user-registration-page .user-registration,
+.user-registration-page .user-registration-form-login,
+.user-registration-page .user-registration-ResetPassword {
+  max-width: 34rem;
+  margin: 3rem auto;
+  padding: 2.5rem;
+  background: #fff;
+  border: 1px solid var(--iss-line);
+  border-radius: 2rem;
+  box-shadow: 0 1px 2px rgb(11 27 56 / 0.04), 0 24px 48px -16px rgb(11 27 56 / 0.18);
+}
+@media (max-width: 600px) {
+  .user-registration-page .user-registration,
+  .user-registration-page .user-registration-form-login,
+  .user-registration-page .user-registration-ResetPassword {
+    margin: 1.5rem 1rem;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+  }
+}
+
+.user-registration-page h1,
+.user-registration-page h2,
+.user-registration-page .ur-lost-password-title {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--iss-navy);
+}
+.user-registration-page .ur-lost-password-message {
+  color: var(--iss-muted);
+}
+
+/* ── Labels & fields ────────────────────────────────────────────── */
+.user-registration-page .user-registration-form__label,
+.user-registration-page .ur-label,
+.user-registration-page .user-registration-form-row label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--iss-navy);
+}
+.user-registration-page .ur-label .required,
+.user-registration-page label .required {
+  color: var(--iss-teal);
+  text-decoration: none;
+}
+
+.user-registration-page .user-registration-Input,
+.user-registration-page .input-text,
+.user-registration-page .ur-frontend-field,
+.user-registration-page input[type="text"],
+.user-registration-page input[type="email"],
+.user-registration-page input[type="password"] {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.85rem 1rem;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--iss-navy);
+  background: #fff;
+  border: 1px solid var(--iss-line);
+  border-radius: 1rem;
+  box-shadow: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.user-registration-page .user-registration-Input:hover,
+.user-registration-page .input-text:hover {
+  border-color: #94a9c9;
+}
+.user-registration-page .user-registration-Input:focus,
+.user-registration-page .input-text:focus,
+.user-registration-page input:focus {
+  outline: none;
+  border-color: #16a38e;
+  box-shadow: 0 0 0 4px rgb(22 163 142 / 0.15);
+}
+
+.user-registration-page .ur-form-row,
+.user-registration-page .user-registration-form-row,
+.user-registration-page .ur-field-item {
+  margin-bottom: 1.25rem;
+}
+
+/* Password show/hide toggle */
+.user-registration-page .password-input-group {
+  position: relative;
+}
+.user-registration-page .password_preview {
+  color: var(--iss-muted);
+  cursor: pointer;
+}
+.user-registration-page .password_preview:hover {
+  color: var(--iss-teal);
+}
+
+/* Password strength meter (rendered when enabled in the form settings) */
+.user-registration-page [class*="password-strength"],
+.user-registration-page [id*="password-strength"] {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Checkbox */
+.user-registration-page .user-registration-form__input-checkbox,
+.user-registration-page input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--iss-teal);
+  vertical-align: -0.15em;
+  margin-right: 0.4rem;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────── */
+.user-registration-page .ur-submit-button,
+.user-registration-page .user-registration-Button,
+.user-registration-page .ur-reset-password-btn,
+.user-registration-page .ur-button-container .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0 2rem;
+  font: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #fff;
+  background: var(--iss-teal);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 10px 40px -10px rgb(22 163 142 / 0.55);
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.15s;
+}
+.user-registration-page .ur-submit-button:hover,
+.user-registration-page .user-registration-Button:hover,
+.user-registration-page .ur-reset-password-btn:hover,
+.user-registration-page .ur-button-container .button:hover {
+  background: var(--iss-teal-hover);
+}
+.user-registration-page .ur-submit-button:active,
+.user-registration-page .user-registration-Button:active {
+  transform: scale(0.98);
+}
+.user-registration-page .ur-submit-button:focus-visible,
+.user-registration-page .user-registration-Button:focus-visible {
+  outline: 2px solid #16a38e;
+  outline-offset: 3px;
+}
+
+/* ── Links ──────────────────────────────────────────────────────── */
+.user-registration-page .user-registration-LostPassword a,
+.user-registration-page .user-registration-register a,
+.user-registration-page .user-registration a {
+  color: var(--iss-teal);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.user-registration-page .user-registration-register {
+  margin-top: 1.25rem;
+  text-align: center;
+  color: var(--iss-muted);
+}
+
+/* ── Notices (errors, success, info) ────────────────────────────── */
+.user-registration-page .user-registration-error,
+.user-registration-page .user-registration-message,
+.user-registration-page .user-registration-info {
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1rem;
+  list-style: none;
+  border-radius: 1rem;
+  border: 1px solid;
+  font-size: 0.9rem;
+}
+.user-registration-page .user-registration-error {
+  color: var(--iss-error);
+  background: #fef3f2;
+  border-color: #fecdca;
+}
+.user-registration-page .user-registration-message {
+  color: var(--iss-teal-hover);
+  background: var(--iss-teal-soft);
+  border-color: #96ead7;
+}
+.user-registration-page .user-registration-info {
+  color: var(--iss-navy-2);
+  background: #f2f5fa;
+  border-color: #c3d0e3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .user-registration-page * {
+    transition: none !important;
+  }
+}

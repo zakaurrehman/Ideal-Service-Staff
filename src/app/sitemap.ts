@@ -28,7 +28,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     page("/contact/", 0.8),
     page("/blog/", 0.6, "weekly"),
     ...posts.map((p) => ({ url: `${SITE_URL}/${p.slug}/`, lastModified: new Date(p.modified), changeFrequency: "yearly" as const, priority: 0.5 })),
-    page("/sign-in/", 0.3, "yearly"),
     page("/legal-disclosure/", 0.3, "yearly"),
     page("/privacy-policy/", 0.3, "yearly"),
     page("/terms-and-conditions/", 0.3, "yearly"),
