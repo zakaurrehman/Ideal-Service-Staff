@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE_URL, site } from "@/content/site";
+import { SITE_URL, affiliation, site } from "@/content/site";
 
 /** Per-page metadata with canonical URL + Open Graph defaults. */
 export function pageMetadata({
@@ -66,6 +66,7 @@ export function organizationJsonLd() {
       closes: h.closes,
     })),
     sameAs: Object.values(site.social),
+    memberOf: { "@type": "Organization", name: `${affiliation.name}`, description: affiliation.tagline },
   };
 }
 

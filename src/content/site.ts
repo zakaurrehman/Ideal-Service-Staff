@@ -37,6 +37,13 @@ export const site = {
   },
 } as const;
 
+/** Network affiliation confirmed by Ideal Service Staff (badge supplied by the company). */
+export const affiliation = {
+  name: "Hospitals Without Walls",
+  tagline: "A Global Network of Patient-Centered Healthcare Providers",
+  image: "/images/affiliation-hospitals-without-walls.webp",
+} as const;
+
 export type NavLink = { label: string; href: string; description?: string; external?: boolean };
 export type NavItem = NavLink & { children?: NavLink[] };
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import { footerNav, site } from "@/content/site";
+import Image from "next/image";
+import { affiliation, footerNav, site } from "@/content/site";
 import { services } from "@/content/services";
 import { Logo } from "@/components/ui/Primitives";
 import { ButtonLink } from "@/components/ui/Button";
@@ -100,6 +101,19 @@ export function Footer() {
               </li>
             ))}
           </ul>
+          <figure className="mt-8 max-w-[17rem]">
+            <Image
+              src={affiliation.image}
+              alt={`Proudly affiliated with ${affiliation.name}®, ${affiliation.tagline}`}
+              width={1536}
+              height={1024}
+              sizes="272px"
+              className="h-auto w-full rounded-2xl bg-white p-1.5 shadow-lift"
+            />
+            <figcaption className="mt-3 text-xs text-navy-300">
+              Proudly affiliated with <span className="font-semibold text-white">{affiliation.name}®</span>
+            </figcaption>
+          </figure>
         </div>
 
         <div className="grid gap-10 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-[1fr_0.8fr_0.95fr_1.4fr]">

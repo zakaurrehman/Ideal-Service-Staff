@@ -3,6 +3,7 @@ import { Hero } from "@/components/sections/home/Hero";
 import { TrustBar } from "@/components/sections/home/TrustBar";
 import { AboutIntro } from "@/components/sections/home/AboutIntro";
 import { ServicesExplorer } from "@/components/sections/home/ServicesExplorer";
+import { Affiliation } from "@/components/sections/home/Affiliation";
 import { getContent, getPublicServices } from "@/lib/content";
 import { WhyChoose } from "@/components/sections/home/WhyChoose";
 import { HowItWorks } from "@/components/sections/home/HowItWorks";
@@ -32,6 +33,7 @@ export default async function HomePage() {
     <>
       <Hero />
       <TrustBar />
+      <Affiliation />
       <AboutIntro />
 
       <section id="services" className="cv-auto section relative bg-sand">
