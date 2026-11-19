@@ -45,7 +45,8 @@ export function Header() {
         animate={{ y: hidden ? "-110%" : "0%" }}
         transition={{ duration: 0.5, ease: EASE }}
       >
-        <div className="container-x pt-3 sm:pt-4">
+        {/* Wider than page content on very large screens so the phone number fits beside the menu. */}
+        <div className="container-x pt-3 sm:pt-4 2xl:max-w-[92rem]">
           <div
             className={cn(
               "flex h-[4.25rem] items-center justify-between gap-4 rounded-full pl-4 pr-2.5 transition-all duration-500 ease-[var(--ease-out-expo)] sm:pl-5",
@@ -132,7 +133,7 @@ function DesktopItem({ item, active, hovered, onHover }: { item: NavItem; active
   };
 
   const linkCls = cn(
-    "relative z-10 flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-[0.9rem] font-semibold transition-colors duration-300 2xl:px-3.5",
+    "relative z-10 flex items-center gap-1 whitespace-nowrap rounded-full px-[0.7rem] py-2 text-[0.9rem] font-semibold transition-colors duration-300 2xl:px-3",
     active ? "text-navy-950" : "text-navy-800/75 hover:text-navy-950",
   );
 
