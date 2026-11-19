@@ -1,5 +1,7 @@
 # Account portal audit and redesign
 
+> **Historical document.** This describes the earlier WordPress hand-off (November 2026). The platform now has its own accounts, dashboards and booking: see [`NEW-PLATFORM-ARCHITECTURE.md`](NEW-PLATFORM-ARCHITECTURE.md).
+
 Written for the site owner and whoever does the WordPress setup and launch. It records what was inspected, what works today, what was changed, and what still needs WordPress-side action.
 
 ## 1. How the audit was done

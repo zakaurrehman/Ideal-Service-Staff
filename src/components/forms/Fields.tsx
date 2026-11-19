@@ -19,6 +19,7 @@ export function useInquiryForm(kind: FormKind) {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [message, setMessage] = useState("");
+  const [reference, setReference] = useState("");
   const startedAt = useRef(Date.now());
 
   const focusFirstError = (form: HTMLFormElement, errs: FieldErrors) => {
@@ -71,8 +72,9 @@ export function useInquiryForm(kind: FormKind) {
       setMessage("");
       try {
         const res = await fetch("/api/inquiry/", { method: "POST", body: fd });
-        const body = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; fields?: FieldErrors };
+        const body = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; fields?: FieldErrors; reference?: string };
         if (res.ok && body.ok) {
+          setReference(body.reference ?? "");
           setStatus("success");
           form.reset();
           return;
@@ -98,7 +100,7 @@ export function useInquiryForm(kind: FormKind) {
     startedAt.current = Date.now();
   };
 
-  return { status, errors, message, onSubmit, validate, clearError, reset };
+  return { status, errors, message, reference, onSubmit, validate, clearError, reset };
 }
 
 /** Hidden anti-spam field. Real users never see or fill it. */
@@ -388,9 +390,10 @@ export function CheckboxField({ name, label, error, onChange, children }: FieldP
   );
 }
 
-export function FileField({ name, label, error, hint, onChange, accept }: FieldProps & { accept: string }) {
+export function FileField({ name, label, error, hint, onChange, accept, multiple, prompt = "Upload your résumé", sizeHint = "PDF or Word · up to 4 MB" }: FieldProps & { accept: string; multiple?: boolean; prompt?: string; sizeHint?: string }) {
   const id = `f-${name}`;
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const file = files[0] ?? null;
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <FieldShell id={id} label={label} error={error} hint={hint}>
@@ -406,9 +409,9 @@ export function FileField({ name, label, error, hint, onChange, accept }: FieldP
           {file ? <FileText aria-hidden className="size-5" /> : <Upload aria-hidden className="size-5" />}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-semibold text-navy-900">{file ? file.name : "Upload your résumé"}</span>
+          <span className="block truncate text-sm font-semibold text-navy-900">{file ? files.map((x) => x.name).join(", ") : prompt}</span>
           <span className="block text-xs text-muted">
-            {file ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : "PDF or Word · up to 5 MB"}
+            {file ? `${files.length > 1 ? `${files.length} files · ` : ""}${(files.reduce((n, x) => n + x.size, 0) / 1024 / 1024).toFixed(2)} MB` : sizeHint}
           </span>
         </span>
         {file && (
@@ -418,7 +421,7 @@ export function FileField({ name, label, error, hint, onChange, accept }: FieldP
             onClick={(e) => {
               e.preventDefault();
               if (inputRef.current) inputRef.current.value = "";
-              setFile(null);
+              setFiles([]);
               onChange?.(name);
             }}
             className="grid size-9 place-items-center rounded-full text-muted hover:bg-navy-50 hover:text-navy-900"
@@ -432,10 +435,11 @@ export function FileField({ name, label, error, hint, onChange, accept }: FieldP
           name={name}
           type="file"
           accept={accept}
+          multiple={multiple}
           className="sr-only"
           aria-describedby={describedBy(id, error, hint)}
           onChange={(e) => {
-            setFile(e.target.files?.[0] ?? null);
+            setFiles(Array.from(e.target.files ?? []));
             onChange?.(name);
           }}
         />

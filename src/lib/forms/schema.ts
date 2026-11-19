@@ -65,7 +65,10 @@ export const bookingSchema = z.object({
 });
 
 
-export const RESUME_MAX_BYTES = 5 * 1024 * 1024;
+/** Vercel functions accept ~4.5 MB per request, so all attachments together must stay under 4 MB. */
+export const RESUME_MAX_BYTES = 4 * 1024 * 1024;
+export const ATTACHMENTS_MAX_BYTES = 4 * 1024 * 1024;
+export const MAX_SUPPORTING_DOCS = 3;
 export const RESUME_TYPES = [
   "application/pdf",
   "application/msword",
@@ -77,12 +80,17 @@ export const jobApplicationSchema = z.object({
   lastName: z.string().trim().min(1, "Enter your last name.").max(80),
   email,
   phone,
+  addressLine1: optionalText(160),
   city: z.string().trim().min(2, "Enter your city.").max(120),
+  region: z.union([z.literal(""), z.string().trim().regex(/^[A-Za-z]{2}$/, "Use the 2-letter state code.")]).optional(),
+  postalCode: z.union([z.literal(""), z.string().trim().regex(/^d{5}$/, "Enter a 5-digit ZIP code.")]).optional(),
   positions: z.array(z.string().max(120)).min(1, "Choose at least one position."),
   employmentType: z.enum(["full-time", "part-time", "per-diem", "live-in"], { message: "Choose an employment type." }),
   availability: z.array(z.enum(["weekdays", "weekends", "evenings", "overnights"])).min(1, "Choose your availability."),
   experience: z.enum(["none", "under-1", "1-3", "3-5", "5-plus"], { message: "Choose your experience level." }),
   certifications: z.array(z.string().max(80)).optional().default([]),
+  skills: optionalText(400),
+  qualifications: optionalText(2000),
   transportation: z.enum(["yes", "no"], { message: "Let us know about transportation." }),
   workAuthorized: z.enum(["yes", "no"], { message: "Please answer this question." }),
   about: optionalText(4000),
@@ -105,7 +113,7 @@ export type FormKind = keyof typeof schemas;
 const ARRAY_FIELDS = new Set(["services", "positions", "availability", "certifications"]);
 const BOOLEAN_FIELDS = new Set(["smsConsent", "attest"]);
 /** Never forwarded: anti-spam + transport fields. */
-export const META_FIELDS = new Set(["kind", "company_website", "started_at", "resume"]);
+export const META_FIELDS = new Set(["kind", "company_website", "started_at", "resume", "documents"]);
 
 /** Convert a FormData payload into the plain object the schemas expect. */
 export function formDataToObject(fd: FormData) {

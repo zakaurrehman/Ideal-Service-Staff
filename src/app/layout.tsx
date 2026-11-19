@@ -2,11 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SITE_URL, site } from "@/content/site";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { CursorRing, MotionProvider, ScrollProgress, SmoothScroll } from "@/components/layout/Experience";
-import { Intro, introScript } from "@/components/layout/Intro";
-import { revealScript } from "@/components/motion/Reveal";
+import { introScript } from "@/components/layout/Intro";
 import { JsonLd, organizationJsonLd } from "@/lib/seo";
 
 const fraunces = Fraunces({
@@ -65,20 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <style>{"[data-reveal],[data-reveal-item],.split-word{opacity:1!important;transform:none!important}"}</style>
         </noscript>
       </head>
-      <body>
-        <Intro />
-        <MotionProvider>
-          <SmoothScroll />
-          <ScrollProgress />
-          <CursorRing />
-          <Header />
-          <main id="main" tabIndex={-1} className="outline-none">
-            {children}
-          </main>
-          <Footer />
-        </MotionProvider>
-        <script dangerouslySetInnerHTML={{ __html: revealScript }} />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

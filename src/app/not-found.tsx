@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { ButtonLink } from "@/components/ui/Button";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 
 export default function NotFound() {
   return (
+    <SiteChrome>
     <section className="relative flex min-h-[80vh] items-center overflow-hidden pt-32">
       <div aria-hidden className="absolute -right-40 top-10 -z-10 size-[36rem] rounded-full bg-teal-200/40 blur-3xl" />
       <div className="container-x">
@@ -31,5 +33,6 @@ export default function NotFound() {
         </p>
       </div>
     </section>
+    </SiteChrome>
   );
 }

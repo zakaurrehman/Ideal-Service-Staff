@@ -3,8 +3,6 @@
  * idealservicestaff.com (contact page, header, footer).
  */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://idealservicestaff.com").replace(/\/$/, "");
-export const PORTAL_URL = (process.env.NEXT_PUBLIC_PORTAL_URL ?? "https://idealservicestaff.com").replace(/\/$/, "");
-export const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL || "";
 
 export const site = {
   name: "Ideal Service Staff",
@@ -39,32 +37,6 @@ export const site = {
   },
 } as const;
 
-const originOf = (u: string) => {
-  try {
-    return new URL(u).origin;
-  } catch {
-    return u;
-  }
-};
-
-/**
- * True when WordPress runs on its own origin (e.g. portal.idealservicestaff.com).
- * Until then, gateway pages never auto-redirect (that would loop on one domain).
- */
-export const portalIsSeparate = originOf(PORTAL_URL) !== originOf(SITE_URL);
-
-/** WordPress destinations — slugs verified against the live site. */
-export const portal = {
-  origin: PORTAL_URL,
-  signIn: `${PORTAL_URL}/sign-in/`,
-  register: `${PORTAL_URL}/registration/`,
-  lostPassword: `${PORTAL_URL}/lost-password/`,
-  myAccount: `${PORTAL_URL}/my-account/`,
-  customerPanel: `${PORTAL_URL}/customer-panel/`,
-  employeePanel: `${PORTAL_URL}/employee-panel/`,
-  admin: `${PORTAL_URL}/wp-admin/`,
-};
-
 export type NavLink = { label: string; href: string; description?: string; external?: boolean };
 export type NavItem = NavLink & { children?: NavLink[] };
 
@@ -94,15 +66,17 @@ export const footerNav = {
     { label: "About Us", href: "/non-medical-home-care-experts/" },
     { label: "How It Works", href: "/how-it-works/" },
     { label: "Our Blog", href: "/blog/" },
-    { label: "Careers — Apply", href: "/get-job/" },
+    { label: "Careers", href: "/get-job/" },
+    { label: "Apply for a Position", href: "/careers/apply/" },
     { label: "Contact Us", href: "/contact/" },
   ],
   care: [
     { label: "Request Care", href: "/get-care/" },
     { label: "Services Booking", href: "/services-booking/" },
     { label: "Sign In / My Account", href: "/sign-in/" },
-    { label: "Customer Dashboard", href: "/customer-panel/" },
-    { label: "Employee Dashboard", href: "/employee-panel/" },
+    { label: "Create an Account", href: "/register/" },
+    { label: "Customer Dashboard", href: "/customer/dashboard/" },
+    { label: "Employee Dashboard", href: "/employee/dashboard/" },
   ],
   legal: [
     { label: "Legal Disclosure", href: "/legal-disclosure/" },

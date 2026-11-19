@@ -1,5 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { deliver, type Attachment } from "@/lib/forms/deliver";
+import { SubmissionError, persistSubmission } from "@/lib/forms/persist";
+import { getDb, isDatabaseConfigured } from "@/lib/db";
+import { rateLimit } from "@/lib/auth/core";
 import {
   RESUME_MAX_BYTES,
   RESUME_TYPES,
@@ -39,7 +42,10 @@ export async function POST(req: NextRequest) {
   }
 
   const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
-  if (rateLimited(ip)) {
+  const limited = isDatabaseConfigured()
+    ? !(await rateLimit(await getDb(), `inquiry:${ip}`, MAX_PER_WINDOW, WINDOW_MS / 1000)).ok // shared across instances
+    : rateLimited(ip);
+  if (limited) {
     return json({ ok: false, error: "Too many submissions. Please call us at (310) 462-1700." }, 429);
   }
 
@@ -69,7 +75,7 @@ export async function POST(req: NextRequest) {
   if (kind === "job-application") {
     const file = fd.get("resume");
     if (file instanceof File && file.size > 0) {
-      if (file.size > RESUME_MAX_BYTES) return json({ ok: false, fields: { resume: "Résumé must be 5 MB or smaller." } }, 422);
+      if (file.size > RESUME_MAX_BYTES) return json({ ok: false, fields: { resume: "Résumé must be 4 MB or smaller." } }, 422);
       if (!RESUME_TYPES.includes(file.type)) return json({ ok: false, fields: { resume: "Upload a PDF or Word document." } }, 422);
       attachment = {
         filename: file.name.replace(/[^\w.\- ]+/g, "_").slice(0, 120),
@@ -80,17 +86,32 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const result = await deliver({
-    kind,
-    data: parsed.data as Record<string, unknown>,
-    attachment,
-    meta: {
-      submittedAt: new Date().toISOString(),
-      page: req.headers.get("referer") ?? undefined,
-      userAgent: req.headers.get("user-agent") ?? undefined,
-      ip,
-    },
-  });
+  const meta = {
+    submittedAt: new Date().toISOString(),
+    page: req.headers.get("referer") ?? undefined,
+    userAgent: req.headers.get("user-agent") ?? undefined,
+    ip,
+  };
+
+  // 1. The platform database is the system of record: success only after it commits.
+  if (isDatabaseConfigured()) {
+    let reference: string;
+    try {
+      ({ reference } = await persistSubmission(kind, parsed.data as Record<string, unknown>, fd));
+    } catch (err) {
+      if (err instanceof SubmissionError) {
+        return json({ ok: false, error: err.message, ...(err.field ? { fields: { [err.field]: err.message } } : {}) }, err.status);
+      }
+      console.error("[inquiry] persist failed", err);
+      return json({ ok: false, error: "We couldn’t save your request just now. Please try again, or call (310) 462-1700." }, 500);
+    }
+    // 2. Optional copy to the office inbox / webhook — best effort, never blocks success.
+    await deliver({ kind, data: { reference, ...(parsed.data as Record<string, unknown>) }, attachment, meta }).catch(() => undefined);
+    return json({ ok: true, reference });
+  }
+
+  // No database (e.g. before launch): delivery channel is required.
+  const result = await deliver({ kind, data: parsed.data as Record<string, unknown>, attachment, meta });
 
   if (!result.ok) {
     return json(

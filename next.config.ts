@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://idealservicestaff.com";
-const PORTAL_URL = (process.env.NEXT_PUBLIC_PORTAL_URL ?? "https://idealservicestaff.com").replace(/\/$/, "");
 const WORDPRESS_URL = process.env.WORDPRESS_URL ?? "https://idealservicestaff.com";
 
 const origin = (u: string) => {
@@ -11,26 +10,6 @@ const origin = (u: string) => {
     return u;
   }
 };
-
-/**
- * WordPress account routes (User Registration plugin) — slugs verified on the
- * live site. The new front-end forwards the original URLs to the portal so
- * bookmarks, emails and password-reset links never break.
- * Forwarding is skipped if the portal shares the site origin (would loop).
- *
- * /customer-panel/ and /employee-panel/ are NOT listed: they are gateway pages
- * (src/app/customer-panel, src/app/employee-panel) that check whether Amelia is
- * actually working and only then forward to WordPress.
- */
-const PORTAL_ROUTES = ["login", "my-account", "registration", "lost-password"];
-const portalIsSeparate = origin(PORTAL_URL) !== origin(SITE_URL);
-if (!portalIsSeparate) {
-  console.warn(
-    "\n⚠  NEXT_PUBLIC_PORTAL_URL has the same origin as NEXT_PUBLIC_SITE_URL.\n" +
-      "   Legacy account URLs (/login/, /my-account/, /registration/, /lost-password/) will point to the /sign-in/ hub instead of WordPress.\n" +
-      "   Set NEXT_PUBLIC_PORTAL_URL to the WordPress origin (e.g. https://portal.idealservicestaff.com) before launch.\n",
-  );
-}
 
 /** Theme demo posts (finance/trading) left over from the original WordPress template. */
 const LEGACY_DEMO_POSTS = [
@@ -43,6 +22,8 @@ const nextConfig: NextConfig = {
   // WordPress permalinks all end in "/" — keep them byte-for-byte for SEO.
   trailingSlash: true,
   poweredByHeader: false,
+  // Native / WASM packages are loaded from node_modules at runtime instead of being bundled.
+  serverExternalPackages: ["@node-rs/argon2", "@electric-sql/pglite"],
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
@@ -51,6 +32,8 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
+    // Résumé + supporting documents; Vercel functions accept up to 4.5 MB per request.
+    serverActions: { bodySizeLimit: "4.5mb" },
   },
   async redirects() {
     return [
@@ -59,20 +42,22 @@ const nextConfig: NextConfig = {
       { source: "/online/", destination: "/", permanent: true },
       { source: "/under-construction/", destination: "/", permanent: true },
       ...LEGACY_DEMO_POSTS.map((slug) => ({ source: `/${slug}/`, destination: "/blog/", permanent: true })),
-      // Requested slug that never existed in WordPress — the real page is /employee-panel/
-      { source: "/employee-dashboard/", destination: "/employee-panel/", permanent: true },
-      ...PORTAL_ROUTES.map((r) => ({
-        source: `/${r}/`,
-        destination: portalIsSeparate ? `${PORTAL_URL}/${r}/` : "/sign-in/",
-        permanent: false,
-      })),
-      // After cutover: WordPress admin, core login and old media links keep working
-      ...(portalIsSeparate
-        ? [
-            { source: "/wp-admin/:path*", destination: `${PORTAL_URL}/wp-admin/:path*`, permanent: false },
-            { source: "/wp-login.php", destination: `${PORTAL_URL}/wp-login.php`, permanent: false },
-            { source: "/wp-content/uploads/:path*", destination: `${PORTAL_URL}/wp-content/uploads/:path*`, permanent: true },
-          ]
+      // Former WordPress account URLs → the platform's own pages (WordPress is no longer used for accounts).
+      { source: "/login/", destination: "/sign-in/", permanent: true },
+      { source: "/my-account/", destination: "/account/", permanent: true },
+      { source: "/registration/", destination: "/register/", permanent: true },
+      { source: "/lost-password/", destination: "/forgot-password/", permanent: true },
+      { source: "/customer-panel/", destination: "/customer/dashboard/", permanent: true },
+      { source: "/employee-panel/", destination: "/employee/dashboard/", permanent: true },
+      { source: "/employee-dashboard/", destination: "/employee/dashboard/", permanent: true },
+      { source: "/careers/", destination: "/get-job/", permanent: true },
+      { source: "/customer/", destination: "/customer/dashboard/", permanent: false },
+      { source: "/employee/", destination: "/employee/dashboard/", permanent: false },
+      { source: "/wp-admin/:path*", destination: "/admin/", permanent: false },
+      { source: "/wp-login.php", destination: "/sign-in/", permanent: false },
+      // Old media links keep working while WordPress still hosts them.
+      ...(origin(WORDPRESS_URL) !== origin(SITE_URL)
+        ? [{ source: "/wp-content/uploads/:path*", destination: `${WORDPRESS_URL}/wp-content/uploads/:path*`, permanent: true }]
         : []),
     ];
   },

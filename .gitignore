@@ -8,3 +8,6 @@ next-env.d.ts
 .env.*.local
 .vercel
 .DS_Store
+
+# Local development database + uploads (PGlite)
+.data/
